@@ -11,7 +11,7 @@ def check_users(users):
     else:
         with open(FILENAME, 'w') as f:
             for user in users:
-                f.write(user,'\n')
+                f.write(user)
         f.close()
 
 def main():

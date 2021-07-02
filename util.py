@@ -1,8 +1,8 @@
 import requests, json
 import datetime, boto3
 from base64 import b64decode
-
-FILENAME='warned_users'
+FILEPATH='/home/ubuntu/key-rotation/'
+FILENAME=FILEPATH+'warned_users'
 AWS_EMAIL_REGION = 'us-east-1'
 AWS_DEFAULT_REGION = 'ap-southeast-1'
 KEY_YOUNG_MESSAGE = 'Key is still young'
