@@ -1,7 +1,7 @@
 now=$(date)
 echo "Starting at "$now
 result=$(python3 regular_slack_notification.py)
-if [ -z "$var" ]
+if [ -z "$result" ]
 then
     echo "No user with old access key"
 else
