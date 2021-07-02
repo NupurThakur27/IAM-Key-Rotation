@@ -3,7 +3,7 @@ import datetime, boto3
 from base64 import b64decode
 
 AWS_EMAIL_REGION = 'us-east-1'
-AWS_DEFAULT_REGION = 'ap-coutheast-1'
+AWS_DEFAULT_REGION = 'ap-southeast-1'
 KEY_YOUNG_MESSAGE = 'Key is still young'
 KEY_DEACTIVATED_MESSAGE = 'key is now EXPIRED! Changing key to INACTIVE state'
 KEY_DELETED_MESSAGE = 'Key is now deleted'
@@ -17,7 +17,7 @@ KEY_STATE_INACTIVE = "Inactive"
 EXPIRY_KEY_AGE_NOTIFICATION = 42
 
 ENCRYPTED_HOOK_URL = "AQICAHgQoY6rIhRRO3x7sKf4NyxyMPkGQVFWqCNi/+Dtcfv4SAHXVXrrn6Xar8cdHbgmFG5kAAAAqzCBqAYJKoZIhvcNAQcGoIGaMIGXAgEAMIGRBgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDNwF/9SuCp+xvWG0PgIBEIBkBWFFrFwb9vjFO5ldImL8xF9equK50wZMc6H2dEKz/tUnmDE0W3cXuFWuTWFZfUYaqJwp+tJ0Zn6bI78OaLSnoVjXhqCslAYVUuTCxQsXApEf2nAfDnmInhTf85irFGXLuYO/vQ=="
-decoded_url = boto3.client('kms').decrypt(CiphertextBlob=b64decode(ENCRYPTED_HOOK_URL))['Plaintext'].decode('utf-8')
+decoded_url = boto3.client('kms', region_name=AWS_DEFAULT_REGION).decrypt(CiphertextBlob=b64decode(ENCRYPTED_HOOK_URL))['Plaintext'].decode('utf-8')
 HOOK_URL = "https://" + decoded_url
 
 KEY_MAX_DEACTIVATE_AGE_IN_DAYS = 45

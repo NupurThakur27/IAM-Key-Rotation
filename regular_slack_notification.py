@@ -3,8 +3,6 @@ import boto3
 from base64 import b64decode
 from util import *
 
-decoded_url = boto3.client('kms').decrypt(CiphertextBlob=b64decode(ENCRYPTED_HOOK_URL))['Plaintext'].decode('utf-8')
-HOOK_URL = "https://" + decoded_url
 
 def get_user_old_keys( keyAge ):
     client = boto3.client('iam',region_name = AWS_DEFAULT_REGION)
