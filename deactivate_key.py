@@ -1,3 +1,4 @@
+from logging import warn
 from util import *
 import sys
 from botocore.exceptions import ClientError
@@ -52,6 +53,7 @@ def deactive_key(uname):
                     key_state = KEY_DEACTIVATED_MESSAGE
                     print("Active or Inactive ",key_state)
                     client.update_access_key(UserName=username, AccessKeyId=access_key_id, Status=KEY_STATE_INACTIVE)
+                    remove_warned_user(username)
                     if email == '':
                         print("Deactivate: Unable to find Email Tag for the IAM User")
                     else :

@@ -2,6 +2,7 @@ import requests, json
 import datetime, boto3
 from base64 import b64decode
 
+FILENAME='warned_users'
 AWS_EMAIL_REGION = 'us-east-1'
 AWS_DEFAULT_REGION = 'ap-southeast-1'
 KEY_YOUNG_MESSAGE = 'Key is still young'
@@ -14,12 +15,13 @@ ACCESS_KEY_LENGTH = 20
 KEY_STATE_ACTIVE = "Active"
 KEY_STATE_INACTIVE = "Inactive"
 
-EXPIRY_KEY_AGE_NOTIFICATION = 42
 
 ENCRYPTED_HOOK_URL = "AQICAHgQoY6rIhRRO3x7sKf4NyxyMPkGQVFWqCNi/+Dtcfv4SAHXVXrrn6Xar8cdHbgmFG5kAAAAqzCBqAYJKoZIhvcNAQcGoIGaMIGXAgEAMIGRBgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDNwF/9SuCp+xvWG0PgIBEIBkBWFFrFwb9vjFO5ldImL8xF9equK50wZMc6H2dEKz/tUnmDE0W3cXuFWuTWFZfUYaqJwp+tJ0Zn6bI78OaLSnoVjXhqCslAYVUuTCxQsXApEf2nAfDnmInhTf85irFGXLuYO/vQ=="
 decoded_url = boto3.client('kms', region_name=AWS_DEFAULT_REGION).decrypt(CiphertextBlob=b64decode(ENCRYPTED_HOOK_URL))['Plaintext'].decode('utf-8')
 HOOK_URL = "https://" + decoded_url
 
+
+EXPIRY_KEY_AGE_NOTIFICATION = 42
 KEY_MAX_DEACTIVATE_AGE_IN_DAYS = 45
 KEY_MAX_DELETE_AGE_IN_DAYS = 60
 
@@ -42,10 +44,10 @@ Access Key will be deleted after 15 days on [%s]
 
 Please generate a new key for yourself.
 """
-DEACTIVATION_SLACK_MESSAGE='Access Key `%s` belonging to `%s` deactivated.'
+DEACTIVATION_SLACK_MESSAGE='Access Key `%s` belonging to user `%s` deactivated.'
 
 DELETION_EMAIL_MESSAGE=""""The Access Key [%s] belonging to User [%s] has been automatically deleted due to it being %s days old."""
-DELETION_SLACK_MESSAGE='Access Key `%s` belonging to `%s` deleted.'
+DELETION_SLACK_MESSAGE='Access Key `%s` belonging to user `%s` deleted.'
 def mask_access_key(access_key):
     return access_key[-(ACCESS_KEY_LENGTH-MASK_ACCESS_KEY_LENGTH):].rjust(len(access_key), "*")
 
@@ -81,3 +83,17 @@ def send_slack_notification(slack_message, hook_url):
     headers={'Content-Type': 'application/json'}
     )
     return response
+
+def read_file(filename):
+    fileObj = open(filename, "r") #opens the file in read mode
+    warned_users = fileObj.read().splitlines() #puts the file into an array
+    fileObj.close()
+    return warned_users
+
+def remove_warned_user(uname):
+    warned_users=read_file(FILENAME)
+    with open(FILENAME, 'w') as f:
+        for user in warned_users:
+            if user != uname:
+                f.write(user)
+    f.close()
